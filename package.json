@@ -1,0 +1,29 @@
+{
+  "name": "hsgbe",
+  "version": "1.0.0",
+  "description": "Always by my side",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^5.16.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+	"js-lint": "./node_modules/.bin/eslint '**/*.js'",
+    "js-lint-fix": "./node_modules/.bin/eslint '**/*.js' --fix",
+	"lint": "npm run js-lint && npm run html-lint && npm run css-lint",
+    "js-lint-win": "./node_modules/.bin/eslint **/*.js",
+    "js-lint-win-fix": "./node_modules/.bin/eslint **/*.js --fix",
+	"lint-win": "npm run js-lint-win && npm run html-lint-win && npm run css-lint-win"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tnlong1997/hsgbe.git"
+  },
+  "author": "Yasuo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tnlong1997/hsgbe/issues"
+  },
+  "homepage": "https://github.com/tnlong1997/hsgbe#readme"
+}
