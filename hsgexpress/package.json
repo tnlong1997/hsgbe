@@ -1,0 +1,20 @@
+{
+  "name": "hsgexpress",
+  "version": "1.0.0",
+  "description": "Some mistakes you can't make twice.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+	"js-lint": "./node_modules/.bin/eslint '**/*.js'",
+    "js-lint-fix": "./node_modules/.bin/eslint '**/*.js' --fix",
+	"lint": "npm run js-lint && npm run html-lint && npm run css-lint",
+    "js-lint-win": "./node_modules/.bin/eslint **/*.js",
+    "js-lint-win-fix": "./node_modules/.bin/eslint **/*.js --fix",
+	"lint-win": "npm run js-lint-win && npm run html-lint-win && npm run css-lint-win"
+  },
+  "author": "Yasuo",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
