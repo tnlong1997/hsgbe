@@ -1,51 +1,10 @@
 ######################
-# Project Specific
-######################
-
-######################
 # Node
 ######################
 /node/
 node_tmp/
 node_modules/
 npm-debug.log.*
-
-######################
-# SASS
-######################
-.sass-cache/
-
-# External tool builders
-.externalToolBuilders/**
-
-# CDT-specific
-.cproject
-
-# PDT-specific
-.buildpath
-
-######################
-# Intellij
-######################
-.idea/
-*.iml
-*.iws
-*.ipr
-*.ids
-*.orig
-
-######################
-# Visual Studio Code
-######################
-.vscode/
-
-######################
-# Package Files
-######################
-*.jar
-*.war
-*.ear
-*.db
 
 ######################
 # Windows
@@ -65,30 +24,4 @@ Desktop.ini
 # Thumbnails
 ._*
 
-# Files that might appear on external disk
-.Spotlight-V100
-.Trashes
-
-######################
-# Directories
-######################
-/deploy/
-
-######################
-# Logs
-######################
-*.log
-
-######################
-# Others
-######################
-*.class
-*.*~
-*~
-.merge_file*
-
-######################
-# ESLint
-######################
-.eslintcachew
 
