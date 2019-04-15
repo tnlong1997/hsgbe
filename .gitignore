@@ -1,2 +1,27 @@
+######################
+# Node
+######################
+/node/
+node_tmp/
 node_modules/
+npm-debug.log.*
+
+######################
+# Windows
+######################
+# Windows image file caches
+Thumbs.db
+
+# Folder config file
+Desktop.ini
+
+######################
+# Mac OSX
+######################
 .DS_Store
+.svn
+
+# Thumbnails
+._*
+
+
