@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www",
     "js-lint": "./node_modules/.bin/eslint '**/*.js'",
     "js-lint-fix": "./node_modules/.bin/eslint '**/*.js' --fix",
     "lint": "npm run js-lint && npm run html-lint && npm run css-lint",
