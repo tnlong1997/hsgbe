@@ -8,7 +8,7 @@ router.post('/login', userController.user_log_in);
 router.post('/signup', userController.user_sign_up);
 
 router.get('/', function(req, res) {
-	return res.status(200).send({index: "users"});
+	return res.send({ status: 200, index: "users"});
 });
 
 module.exports = router;
