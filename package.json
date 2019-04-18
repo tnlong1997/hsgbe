@@ -12,7 +12,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "js-lint": "./node_modules/.bin/eslint '**/*.js'",
     "js-lint-fix": "./node_modules/.bin/eslint '**/*.js' --fix",
-    " js-lint-win": "./node_modules/.bin/eslint **/*.js",
+    "js-lint-win": "./node_modules/.bin/eslint **/*.js",
     "js-lint-win-fix": "./node_modules/.bin/eslint **/*.js --fix",
     "lint-win": "npm run js-lint-win && npm run html-lint-win && npm run css-lint-win"
   },
