@@ -9,7 +9,6 @@
     "dev": "nodemon ./bin/www",
     "js-lint": "./node_modules/.bin/eslint '**/*.js'",
     "js-lint-fix": "./node_modules/.bin/eslint '**/*.js' --fix",
-    "lint": "npm run js-lint && npm run html-lint && npm run css-lint",
     "js-lint-win": "./node_modules/.bin/eslint **/*.js",
     "js-lint-win-fix": "./node_modules/.bin/eslint **/*.js --fix",
     "lint-win": "npm run js-lint-win && npm run html-lint-win && npm run css-lint-win"

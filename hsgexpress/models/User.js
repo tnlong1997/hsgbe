@@ -4,27 +4,19 @@ var bcrypt = require('bcrypt-nodejs');
 var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
-		email: {
-			type: String,
-			required: [true, 'Email is required'],
-			maxlength: 100,
-			minlength: [8, 'Email should be longer than 8 characters'],
-			unique: [true, 'This email has been used'],
-			match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Invalid email'],
-		},
-		password: {
-			type: String,
-			required: [true, 'Password is required'],
-		},
-		resetPasswordToken: {
-			type: String,
-			default: "",
-		},
-		resetPasswordExpires: {
-			type: Date,
-			default: 0,
-		}
-	}, { timestamps: true });
+	email: {
+		type: String,
+		required: [true, 'Email is required'],
+		maxlength: 100,
+		minlength: [8, 'Email should be longer than 8 characters'],
+		unique: [true, 'This email has been used'],
+		match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Invalid email'],
+	},
+	password: {
+		type: String,
+		required: [true, 'Password is required'],
+    minlength: [8, 'Password should be longer than 8 characters']
+	}}, { timestamps: true });
 
 userSchema.methods.comparePassword = function(inputPassword, callback) {
 	bcrypt.compare(inputPassword, this.password, function(err, isMatch) {
@@ -34,10 +26,6 @@ userSchema.methods.comparePassword = function(inputPassword, callback) {
 		callback(null, isMatch);
 	});
 };
-
-userSchema.virtual('profile.fullName').get(function() {
-	return this.profile.firstName + " " + this.profile.lastName;
-});
 
 userSchema.virtual('createdAtTimestamp').get(function() {
 	return this.createdAt.getTime();
