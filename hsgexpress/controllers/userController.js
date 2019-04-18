@@ -26,11 +26,11 @@ exports.user_sign_up = function(req, res) {
 						return res.send({ status: 500, err: err });
 					}
 					return res.send({
-            status: 200,
-            userId: newUser._id,
-            email: newUser.email,
-            password: newUser.password 
-          });
+						status: 200,
+						userId: newUser._id,
+						email: newUser.email,
+						password: newUser.password 
+					});
 				});
 			});
 		});
