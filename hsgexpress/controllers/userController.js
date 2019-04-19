@@ -2,8 +2,9 @@ var User = require('../models/User');
 var bcrypt = require('bcrypt-nodejs');
 var secret = require('../config/secret');
 var jwt = require('jsonwebtoken');
-const SALT_FACTOR = require('../constants/constants').SALT_FACTOR;
-const EXPIRE_TIME = require('../constants/constants').EXPIRE_TIME;
+var constants = require('../constants/constants');
+const SALT_FACTOR = constants.SALT_FACTOR;
+const EXPIRE_TIME = constants.EXPIRE_TIME;
 
 //POST signup
 exports.user_sign_up = function(req, res) {
