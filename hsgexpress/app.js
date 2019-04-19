@@ -3,11 +3,21 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var mongoose = require('mongoose');
+var dbConfig = require('./config/dbConfig');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var usersRouter = require('./routes/users/users');
 
 var app = express();
+
+// database connection
+mongoose.connect(dbConfig.uri);
+mongoose.Promise = global.Promise;
+
+//database error handler
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -39,3 +49,4 @@ app.use(function(err, req, res) {
 });
 
 module.exports = app;
+
