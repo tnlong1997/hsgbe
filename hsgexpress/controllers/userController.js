@@ -2,7 +2,8 @@ var User = require('../models/User');
 var bcrypt = require('bcrypt-nodejs');
 var secret = require('../config/secret');
 var jwt = require('jsonwebtoken');
-const SALT_FACTOR = require('../constants/constants');
+const SALT_FACTOR = require('../constants/constants').SALT_FACTOR;
+const EXPIRE_TIME = require('../constants/constants').EXPIRE_TIME;
 
 //POST signup
 exports.user_sign_up = function(req, res) {
@@ -57,7 +58,7 @@ exports.user_log_in = function(req, res) {
 		user.comparePassword(req.body.password, function(err, isMatch) {
 			if (isMatch && !err) {
 				var token = jwt.sign({email: user.email, _id: user._id}, secret, {
-					expiresIn: 1000000000000000 // in seconds
+					expiresIn: EXPIRE_TIME
 				});
 
 				return res.send({ status: 200,  token: token});
