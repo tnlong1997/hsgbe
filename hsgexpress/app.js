@@ -4,7 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
-
+var dbConfig = require('./config/dbConfig');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users/users');
@@ -12,9 +12,10 @@ var usersRouter = require('./routes/users/users');
 var app = express();
 
 // database connection
-const uri = "mongodb+srv://hoanghonn:hoang123@testcluster-6estt.mongodb.net/test?retryWrites=true";
-mongoose.connect(uri);
+mongoose.connect(dbConfig.uri);
 mongoose.Promise = global.Promise;
+
+//database error handler
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 

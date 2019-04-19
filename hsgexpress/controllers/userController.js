@@ -2,8 +2,7 @@ var User = require('../models/User');
 var bcrypt = require('bcrypt-nodejs');
 var secret = require('../config/secret');
 var jwt = require('jsonwebtoken');
-
-const SALT_FACTOR = 12;
+const SALT_FACTOR = require('../constants/constants');
 
 //POST signup
 exports.user_sign_up = function(req, res) {
