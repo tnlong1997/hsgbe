@@ -3,12 +3,12 @@ var Schema = mongoose.Schema;
 
 var teamSchema = new Schema({
 	host: {
-		type: Schema.Type.ObjectId,
+		type: Schema.Types.ObjectId,
 		ref: 'User'
 	},
 	participants: [
 		{
-			type: Schema.Type.ObjectId,
+			type: Schema.Types.ObjectId,
 			ref: 'User'
 		}
 	]
