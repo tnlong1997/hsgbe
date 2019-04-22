@@ -14,8 +14,6 @@ exports.game_create = function(req, res) {
 	let newGame = new Game(req.body);
 	newGame.host = req.decoded._id;
 
-	console.log(req.body.team.pariticipants);
-
 	newGame.validate(function(err) {
 		if (err) {
 			return res.send({ status: 400, err: err });
@@ -24,23 +22,25 @@ exports.game_create = function(req, res) {
 			if (err) {
 				return res.send({ status: 500, err: err });
 			}
-			Game.findOneAndUpdate({ "_id": newGame._id }, { 
-				$push: { 
-					"participants": req.body.participants, 
+			Game.findOneAndUpdate({ "_id": newGame._id }, {
+				$push: {
+					"participants": req.body.participants,
 					"team": req.body.team
-				}
-			}, function(err, updatedGame) {
+				}}).populate('team').exec(function (err, game) {
 				if (err) {
-					return res.send({ status: 500, err: err });
+					return res.send({ status: 500, err: err});
 				}
-				return res.send({
-					status: 200,
-					gameId: updatedGame._id,
-					host: updatedGame.host,
-					participants: updatedGame.participants,
-					team: updatedGame.team
+				game.team.forEach(function(team) {
+					Game.findOneAndUpdate({ "_id": newGame._id }, {$addToSet: {"participants": team.participants}}, function(err) {
+						if (err) {
+							return res.send({ status: 500, err: err });
+						}
+					});
+				}, function (err) {
+					if (err) return res.send({status: 500, err: err});
 				});
-			});  
+				return res.send({status: 200, game: game});
+			});
 		});
 	});
 };
@@ -57,3 +57,5 @@ exports.game_edit = function(req, res) {
 		return res.send({ status: 200, game: game });
 	});
 };
+
+
