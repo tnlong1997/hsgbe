@@ -92,7 +92,6 @@ exports.user_log_in = function(req, res) {
 	});
 };
 
-<<<<<<< HEAD
 //GET login
 exports.user_verify_log_in = function(req, res) {
 	if (!req.get("Token")) {
@@ -115,9 +114,9 @@ exports.user_verify_log_in = function(req, res) {
 			return res.send({ status: 500, err: 'Authentication failed. Token does not match user data' });
 		}
 	});
-=======
+};
+
 exports.user_list = function(req, res) {
-  console.log(req.decoded);
   User.find({ _id: { $ne: req.decoded._id }}, function(err, users) {
     if(err) {
       return res.send({ status: 500, err: err });
@@ -125,7 +124,6 @@ exports.user_list = function(req, res) {
       return res.send({ status: 200, users: users });
     }
   });
->>>>>>> Add implementation for team creating, editing, listing; Update implementation for game creating;
 };
 
 let noop = function() {}; // A do-nothing function for use with bcrypt module
