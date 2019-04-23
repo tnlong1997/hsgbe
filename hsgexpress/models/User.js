@@ -16,9 +16,6 @@ var userSchema = new Schema({
 		type: String,
 		required: [true, 'Password is required'],
 		minlength: [8, 'Password should be longer than 8 characters']
-	},
-	validTokens: {
-		type: [String]
 	}}, { timestamps: true });
 
 userSchema.methods.comparePassword = function(inputPassword, callback) {

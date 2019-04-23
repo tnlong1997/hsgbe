@@ -1,4 +1,5 @@
 var User = require('../models/User');
+var Token = require('../models/Token');
 var bcrypt = require('bcrypt-nodejs');
 var secret = require('../config/secret');
 var jwt = require('jsonwebtoken');
@@ -62,13 +63,24 @@ exports.user_log_in = function(req, res) {
 					expiresIn: EXPIRE_TIME
 				});
 
-				user.validTokens.push(token);
+				let loginToken = new Token({
+					_userId: user,
+					email: user.email,
+					token: token
+				});
+
 				user.save(function(err) {
 					if (err) {
 						return res.send({ status: 500, err: err});
 					}
 
-					return res.send({ status: 200,  token: token});
+					loginToken.save(function(err) {
+						if (err) {
+							return res.send({ status: 400, err: err});
+						}	
+
+						return res.send({ status: 200,  token: token});
+					});
 				});
 			} else if (!isMatch) {
 				return res.send({ status: 400, err: 'Authentication failed. Passwords did not match.'});
@@ -81,20 +93,26 @@ exports.user_log_in = function(req, res) {
 };
 
 //GET login
-exports.user_log_in_token = function(req, res) {
-	if (!req.body.token) {
+exports.user_verify_log_in = function(req, res) {
+	if (!req.get("Token")) {
 		return res.send({ status: 400, err: "No token in input"});
 	}
-	User.findOne({validTokens: req.body.token}).exec(function(err, user) {
+	Token.findOne({ token: req.get("Token") }, function(err, token) {
 		if (err) {
 			return res.send({ status: 500, err: err});
 		}
 
-		if (!user) {
-			return res.send({ status: 400, err: "Authenticate failed. User not found for request token"});
+		if (!token) {
+			return res.send({ status: 400, err: "Authentication failed. Token not found"});
 		}
 
-		return res.send({ status: 200 });
+		let decodedToken = jwt.verify(token.token, secret, { expiresIn: EXPIRE_TIME });
+		
+		if (decodedToken._id === token._userId.toString()) {
+			return res.send({ status: 200 });	
+		} else {
+			return res.send({ status: 500, err: 'Authentication failed. Token does not match user data' });
+		}
 	});
 };
 
