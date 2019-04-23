@@ -62,8 +62,14 @@ exports.user_log_in = function(req, res) {
 					expiresIn: EXPIRE_TIME
 				});
 
-				return res.send({ status: 200,  token: token});
-				
+				user.validTokens.push(token);
+				user.save(function(err) {
+					if (err) {
+						return res.send({ status: 500, err: err});
+					}
+
+					return res.send({ status: 200,  token: token});
+				});
 			} else if (!isMatch) {
 				return res.send({ status: 400, err: 'Authentication failed. Passwords did not match.'});
 				
@@ -71,6 +77,24 @@ exports.user_log_in = function(req, res) {
 				return res.send({ status: 500, err: 'Database Error'});
 			}
 		});
+	});
+};
+
+//GET login
+exports.user_log_in_token = function(req, res) {
+	if (!req.body.token) {
+		return res.send({ status: 400, err: "No token in input"});
+	}
+	User.findOne({validTokens: req.body.token}).exec(function(err, user) {
+		if (err) {
+			return res.send({ status: 500, err: err});
+		}
+
+		if (!user) {
+			return res.send({ status: 400, err: "Authenticate failed. User not found for request token"});
+		}
+
+		return res.send({ status: 200 });
 	});
 };
 

@@ -7,6 +7,8 @@ router.post('/login', userController.user_log_in);
 
 router.post('/signup', userController.user_sign_up);
 
+router.get('/login', userController.user_log_in_token);
+
 router.get('/', function(req, res) {
 	return res.send({ status: 200, index: "users"});
 });
