@@ -29,7 +29,5 @@ let check_token = (req, res, next) => {
 	}
 };
 
-module.exports = {
-	check_token: check_token
-};
+module.exports = check_token;
 
