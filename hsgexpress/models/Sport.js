@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var sportSchema = new Schema({
-	sport_name: {
+	sport: {
 		type: String,
 		require: [true, 'Sport Name required']
 	}

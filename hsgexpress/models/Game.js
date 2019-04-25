@@ -22,14 +22,14 @@ var gameSchema = new Schema({
 			ref: 'Team'
 		}
 	],
-	address: {
+	location: {
 		type: String,
 		require: [true, 'Location is required']
 	},
-	start_at: {
+	startAt: {
 		type: Date
 	},
-	end_at: {
+	endAt: {
 		type: Date
 	}
 }, { timestamps: true });
