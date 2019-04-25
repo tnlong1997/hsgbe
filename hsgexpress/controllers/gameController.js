@@ -1,4 +1,6 @@
 const Game = require('../models/Game');
+const Team = require('../models/Team');
+const mongoose = require('mongoose');
 
 exports.game_list = function(req, res) {
 	Game.find({}, function(err, users) {
@@ -11,38 +13,37 @@ exports.game_list = function(req, res) {
 };
 
 exports.game_create = function(req, res) {
-	let newGame = new Game(req.body);
-	newGame.host = req.decoded._id;
+  if(!req.body.participants || !req.body.team){
+    return res.send({status: 400, err: "Missing request requirements"});
+  }
 
-	newGame.validate(function(err) {
-		if (err) {
-			return res.send({ status: 400, err: err });
-		}
-		newGame.save(function(err) {
-			if (err) {
-				return res.send({ status: 500, err: err });
-			}
-			Game.findOneAndUpdate({ "_id": newGame._id }, {
-				$push: {
-					"participants": req.body.participants,
-					"team": req.body.team
-				}}).populate('team').exec(function (err, game) {
-				if (err) {
-					return res.send({ status: 500, err: err});
-				}
-				game.team.forEach(function(team) {
-					Game.findOneAndUpdate({ "_id": newGame._id }, {$addToSet: {"participants": team.participants}}, function(err) {
-						if (err) {
-							return res.send({ status: 500, err: err });
-						}
-					});
-				}, function (err) {
-					if (err) return res.send({status: 500, err: err});
-				});
-				return res.send({status: 200, game: game});
-			});
-		});
-	});
+	let newGame = new Game({
+    host: req.decoded._id,
+    participants: req.body.participants.map(_p => mongoose.Types.ObjectId(_p)),
+    team: req.body.team.map(_t => mongoose.Types.ObjectId(_t)),
+    address: req.body.address
+  });
+  let idStr = req.body.participants;
+
+  Team.find({ '_id' : { $in : newGame.team }}, function(err, teams){
+    if(err) return res.send({ status: 500, err: err});
+
+    teams.map(_team => {
+      _team.participants.map(_p => {
+        if(!idStr.includes(_p.toString())){
+          newGame.participants.push(_p);
+          idStr.push(_p.toString());
+        }
+      });
+    });
+
+    newGame.save(function(err) {
+      if(err) return res.send({status: 500, err: err});
+
+      res.send({status: 200, newGame: newGame});
+    });
+  });
+  
 };
 
 exports.game_edit = function(req, res) {
