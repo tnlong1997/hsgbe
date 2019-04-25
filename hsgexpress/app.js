@@ -1,24 +1,24 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var mongoose = require('mongoose');
-var dbConfig = require('./config/dbConfig');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const mongoose = require('mongoose');
+const dbConfig = require('./config/dbConfig');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users/users');
-var gamesRouter = require('./routes/games/games');
-var teamsRouter = require('./routes/teams/teams');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users/users');
+const gamesRouter = require('./routes/games/games');
+const teamsRouter = require('./routes/teams/teams');
 
-var app = express();
+let app = express();
 
 // database connection
 mongoose.connect(dbConfig.uri);
 mongoose.Promise = global.Promise;
 
 //database error handler
-var db = mongoose.connection;
+let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // view engine setup

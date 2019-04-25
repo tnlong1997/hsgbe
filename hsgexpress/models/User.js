@@ -1,9 +1,9 @@
-var mongoose = require('mongoose');
-var uniqueValidator = require('mongoose-unique-validator');
-var bcrypt = require('bcrypt-nodejs');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
+const bcrypt = require('bcrypt-nodejs');
+let Schema = mongoose.Schema;
 
-var userSchema = new Schema({
+let userSchema = new Schema({
 	email: {
 		type: String,
 		required: [true, 'Email is required'],
