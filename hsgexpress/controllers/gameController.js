@@ -21,7 +21,7 @@ exports.game_create = function(req, res) {
     host: req.decoded._id,
     participants: req.body.participants.map(_p => mongoose.Types.ObjectId(_p)),
     team: req.body.team.map(_t => mongoose.Types.ObjectId(_t)),
-    address: req.body.address
+    location: req.body.location
   });
   let idStr = req.body.participants;
 
@@ -29,7 +29,7 @@ exports.game_create = function(req, res) {
     if(err) return res.send({ status: 500, err: err});
 
     teams.map(_team => {
-      _team.participants.map(_p => {
+      _team.members.map(_p => {
         if(!idStr.includes(_p.toString())){
           newGame.participants.push(_p);
           idStr.push(_p.toString());
@@ -47,9 +47,8 @@ exports.game_create = function(req, res) {
 };
 
 exports.game_edit = function(req, res) {
-	let currentGame = req.params.id;
-
-	//issue: validate req body
+	let currentGame = req.params.id; 
+	
 	Game.findOneAndUpdate({'_id': currentGame._id}, req.body, function(err, game) {
 		if (err) {
 			return res.send({ status: 400, err: err });

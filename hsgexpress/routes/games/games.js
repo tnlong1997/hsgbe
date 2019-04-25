@@ -10,6 +10,6 @@ router.post('/new', check_token, gameController.game_create);
 
 router.put('/edit', check_token, gameController.game_edit);
 
-//router.post('/search', middlewares.check_token, gameController.game_search);
+//router.post('/search', check_token, gameController.game_search);
 
 module.exports = router;
