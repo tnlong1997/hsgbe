@@ -1,8 +1,8 @@
-var User = require('../models/User');
-var bcrypt = require('bcrypt-nodejs');
-var secret = require('../config/secret');
-var jwt = require('jsonwebtoken');
-var constants = require('../constants/constants');
+let User = require('../models/User');
+const bcrypt = require('bcrypt-nodejs');
+const secret = require('../config/secret');
+const jwt = require('jsonwebtoken');
+const constants = require('../constants/constants');
 const SALT_FACTOR = constants.SALT_FACTOR;
 const EXPIRE_TIME = constants.EXPIRE_TIME;
 
@@ -58,7 +58,7 @@ exports.user_log_in = function(req, res) {
 
 		user.comparePassword(req.body.password, function(err, isMatch) {
 			if (isMatch && !err) {
-				var token = jwt.sign({email: user.email, _id: user._id}, secret, {
+				let token = jwt.sign({email: user.email, _id: user._id}, secret, {
 					expiresIn: EXPIRE_TIME
 				});
 

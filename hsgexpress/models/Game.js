@@ -1,7 +1,7 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
+let Schema = mongoose.Schema;
 
-var gameSchema = new Schema({
+let gameSchema = new Schema({
 	host: {
 		type: Schema.Types.ObjectId,
 		ref: 'User'

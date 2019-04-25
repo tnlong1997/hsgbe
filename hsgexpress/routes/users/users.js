@@ -1,6 +1,6 @@
-var express = require('express');
-var router = express.Router();
-let check_token = require('../../middlewares/tokenVerifierMiddleware');
+const express = require('express');
+const router = express.Router();
+const check_token = require('../../middlewares/tokenVerifierMiddleware');
 
 const userController = require('../../controllers/userController');
 
