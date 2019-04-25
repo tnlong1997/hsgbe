@@ -13,19 +13,19 @@ exports.game_list = function(req, res) {
 };
 
 exports.game_create = function(req, res) {
-	if (!req.body.participants || !req.body.team) {
+	if (!req.body.participants || !req.body.teams) {
 		return res.send({status: 400, err: "Missing request requirements"});
 	}
 
 	let newGame = new Game({
 		host: req.decoded._id,
 		participants: req.body.participants.map(_p => mongoose.Types.ObjectId(_p)),
-		team: req.body.team.map(_t => mongoose.Types.ObjectId(_t)),
+		teams: req.body.teams.map(_t => mongoose.Types.ObjectId(_t)),
 		location: req.body.location
 	});
 	let idStr = req.body.participants;
 
-	Team.find({ '_id': { $in: newGame.team }}, function(err, teams) {
+	Team.find({ '_id': { $in: newGame.teams }}, function(err, teams) {
 		if (err) return res.send({ status: 500, err: err});
 
 		teams.map(_team => {
@@ -47,14 +47,14 @@ exports.game_create = function(req, res) {
 };
 
 exports.game_edit = function(req, res) {
-	let currentGame = req.params.id; 
+	let currentGame = mongoose.Types.ObjectId(req.params.id); 
 	
-	Game.findOneAndUpdate({'_id': currentGame._id}, req.body, function(err, game) {
+	Game.updateOne({'_id': currentGame}, req.body, function(err) {
 		if (err) {
 			return res.send({ status: 400, err: err });
 		} 
 
-		return res.send({ status: 200, game: game });
+		return res.send({ status: 200 });
 	});
 };
 

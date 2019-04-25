@@ -8,7 +8,7 @@ router.get('/', check_token, gameController.game_list);
 
 router.post('/new', check_token, gameController.game_create);
 
-router.put('/edit', check_token, gameController.game_edit);
+//router.put('/edit/:id', check_token, gameController.game_edit);
 
 //router.post('/search', check_token, gameController.game_search);
 

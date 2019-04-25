@@ -16,7 +16,7 @@ let gameSchema = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'Sport'
 	},
-	team: [
+	teams: [
 		{
 			type: Schema.Types.ObjectId,
 			ref: 'Team'

@@ -1,7 +1,8 @@
 const Team = require('../models/Team');
+const mongoose = require('mongoose');
 
 exports.team_list = function(req, res) {
-	Team.find({ host: req.decoded._id }, function(err, teams) {
+	Team.find({ creator: req.decoded._id }, function(err, teams) {
 		if (err) {
 			return res.send({ status: 500, err: err });
 		} else {
@@ -11,42 +12,25 @@ exports.team_list = function(req, res) {
 };
 
 exports.team_create = function(req, res) {
-	let newTeam = new Team(req.body);
-
-	newTeam.host = req.decoded._id;
-
-	newTeam.validate(function(err) {
-		if (err) {
-			return res.send({ status: 400, err: err });
-		}
-		newTeam.save(function(err) {
-			if (err) {
-				return res.send({ status: 500, err: err });
-			}
-			Team.findOneAndUpdate({ "_id": newTeam._id }, { $push: { "participants": req.body.participants }}, function(err, updatedTeam) {
-				if (err) {
-					return res.send({ status: 500, err: err });
-				}
-				return res.send({
-					status: 200,
-					teamId: updatedTeam._id,
-					host: updatedTeam.host,
-					participants: updatedTeam.participants
-				});
-			});    
-		});
+	let newTeam = new Team({
+		creator: req.decoded._id,
+		members: req.body.members.map(_m => mongoose.Types.ObjectId(_m))
+	});
+  
+	newTeam.save(function(err) {
+		if (err) return res.send({status: 500, err: err});
+		return res.send({status: 200, newTeam: newTeam});
 	});
 };
 
 exports.team_edit = function(req, res) {
-	let currentTeam = req.params.id;
+	let currentTeam = mongoose.Types.ObjectId(req.params.id);
   
-	//issue: validate req body
-	Team.findOneAndUpdate({'_id': currentTeam._id}, req.body, function(err, team) {
+	Team.updateOne({'_id': currentTeam}, req.body, function(err) {
 		if (err) {
 			return res.send({ status: 400, err: err });
 		} 
 
-		return res.send({ status: 200, team: team });
+		return res.send({status: 200});
 	});
 };
