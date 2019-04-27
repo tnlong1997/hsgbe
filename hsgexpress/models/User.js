@@ -16,7 +16,19 @@ let userSchema = new Schema({
 		type: String,
 		required: [true, 'Password is required'],
 		minlength: [8, 'Password should be longer than 8 characters']
-	}}, { timestamps: true });
+	},
+	firstName: {
+		required: true,
+		type: String
+	},
+	lastName: {
+		required: true,
+		type: String
+	},
+	phone: {
+		type: String
+	},
+}, { timestamps: true });
 
 userSchema.methods.comparePassword = function(inputPassword, callback) {
 	bcrypt.compare(inputPassword, this.password, function(err, isMatch) {

@@ -13,7 +13,7 @@ exports.change_profile = function(req, res) {
 		if (err) {
 			return res.send({ status: 500, err: err});
 		}
-        
+
 		if (!user) {
 			return res.send({ status: 400, err: "User not found for email but we are in Profile page"});
 		}
@@ -30,7 +30,7 @@ exports.change_password = function(req, res) {
 	if (!req.body.password) {
 		return res.send({ status: 400, err: "No password in input"});
 	}
-    
+
 	bcrypt.genSalt(SALT_FACTOR, function(err, salt) {
 		if (err) {
 			return res.send({ status: 500, err: err });
@@ -43,15 +43,15 @@ exports.change_password = function(req, res) {
 				if (err) {
 					return res.send({ status: 500, err: err});
 				}
-                
+
 				if (!user) {
 					return res.send({ status: 400, err: "User not found for email but we are in Profile page"});
 				}
-        
+
 				return res.send({ status: 200, msg: "Password updated"});
 			});
 		});
 	});
 };
 
-let noop = function() {}; // A do-nothing function for use with bcrypt module
+let noop = function() {}; // A do-nothing function for use with bcrypt module 
