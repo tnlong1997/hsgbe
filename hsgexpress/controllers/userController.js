@@ -99,8 +99,8 @@ exports.user_list = function(req, res) {
 			return res.send({ status: 500, err: err });
 		} else {
 			return res.send({ status: 200, users: users });
-    }
-  });
+		}
+	});
 };
 
       
@@ -128,13 +128,13 @@ exports.user_verify_log_in = function(req, res) {
 };
 
 exports.user_list = function(req, res) {
-  User.find({ _id: { $ne: req.decoded._id }}, function(err, users) {
-    if(err) {
-      return res.send({ status: 500, err: err });
-    } else {
-      return res.send({ status: 200, users: users });
-    }
-  });
+	User.find({ _id: { $ne: req.decoded._id }}, function(err, users) {
+		if (err) {
+			return res.send({ status: 500, err: err });
+		} else {
+			return res.send({ status: 200, users: users });
+		}
+	});
 };
 
 let noop = function() {}; // A do-nothing function for use with bcrypt module
