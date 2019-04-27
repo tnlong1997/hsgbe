@@ -1,4 +1,5 @@
 let User = require('../models/User');
+const Token = require('../models/Token');
 const bcrypt = require('bcrypt-nodejs');
 const secret = require('../config/secret');
 const jwt = require('jsonwebtoken');
@@ -91,7 +92,18 @@ exports.user_log_in = function(req, res) {
 	});
 };
 
-//GET login
+exports.user_list = function(req, res) {
+	console.log(req.decoded);
+	User.find({ _id: { $ne: req.decoded._id }}, function(err, users) {
+		if (err) {
+			return res.send({ status: 500, err: err });
+		} else {
+			return res.send({ status: 200, users: users });
+    }
+  });
+};
+
+      
 exports.user_verify_log_in = function(req, res) {
 	if (!req.get("Token")) {
 		return res.send({ status: 400, err: "No token in input"});
