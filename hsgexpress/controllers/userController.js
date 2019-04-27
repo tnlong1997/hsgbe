@@ -1,9 +1,9 @@
-var User = require('../models/User');
-var Token = require('../models/Token');
-var bcrypt = require('bcrypt-nodejs');
-var secret = require('../config/secret');
-var jwt = require('jsonwebtoken');
-var constants = require('../constants/constants');
+let User = require('../models/User');
+const Token = require('../models/Token');
+const bcrypt = require('bcrypt-nodejs');
+const secret = require('../config/secret');
+const jwt = require('jsonwebtoken');
+const constants = require('../constants/constants');
 const SALT_FACTOR = constants.SALT_FACTOR;
 const EXPIRE_TIME = constants.EXPIRE_TIME;
 
@@ -59,7 +59,7 @@ exports.user_log_in = function(req, res) {
 
 		user.comparePassword(req.body.password, function(err, isMatch) {
 			if (isMatch && !err) {
-				var token = jwt.sign({email: user.email, _id: user._id}, secret, {
+				let token = jwt.sign({email: user.email, _id: user._id}, secret, {
 					expiresIn: EXPIRE_TIME
 				});
 
@@ -92,7 +92,18 @@ exports.user_log_in = function(req, res) {
 	});
 };
 
-//GET login
+exports.user_list = function(req, res) {
+	console.log(req.decoded);
+	User.find({ _id: { $ne: req.decoded._id }}, function(err, users) {
+		if (err) {
+			return res.send({ status: 500, err: err });
+		} else {
+			return res.send({ status: 200, users: users });
+		}
+	});
+};
+
+      
 exports.user_verify_log_in = function(req, res) {
 	if (!req.get("Token")) {
 		return res.send({ status: 400, err: "No token in input"});
@@ -112,6 +123,16 @@ exports.user_verify_log_in = function(req, res) {
 			return res.send({ status: 200 });	
 		} else {
 			return res.send({ status: 500, err: 'Authentication failed. Token does not match user data' });
+		}
+	});
+};
+
+exports.user_list = function(req, res) {
+	User.find({ _id: { $ne: req.decoded._id }}, function(err, users) {
+		if (err) {
+			return res.send({ status: 500, err: err });
+		} else {
+			return res.send({ status: 200, users: users });
 		}
 	});
 };
