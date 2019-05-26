@@ -1,0 +1,1349 @@
+openapi: 3.0.0
+# Added by API Auto Mocking Plugin
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/tnlong1997/HASAGI/1.0.0
+info:
+  description: Hasagi API DOC
+  version: "1.0.0"
+  title: Hasagi API DOC
+  contact:
+    email: tnlong1997@gmail.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: Admin
+    description: Admin level operations 
+  - name: Authentication
+    description: Operations about authentication info
+  - name: User 
+    description: Operations about user profile 
+  - name: Team
+    description: Operations about user's team
+  - name: Sport
+    description: Endpoints for sport
+  - name: Game
+    description: Operations about game
+paths:
+  /v1/auth/signup:
+    post: 
+      tags:
+        - Authentication
+      summary: Sign up new user
+      description: |
+        Creating new user with required fields then return _id (userID) and AccessToken to client
+      requestBody:
+        description: |
+          Requires both User and UserProfile required fields to create new user, except for createdAt, updatedAt, ... 
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Success request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  payload:
+                    type: object
+                    properties: 
+                      userId:
+                        type: string
+                        format: uuid
+                      accessToken: 
+                        type: string
+                        format: byte
+        '400':
+          $ref: '#/components/responses/400'
+      
+  /v1/auth/signin:
+    post:
+      tags: 
+        - Authentication
+      summary: Sign in 
+      description: |
+        Logging in by email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+      responses:
+        '200': 
+          description: Success request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  payload:
+                    type: object
+                    properties: 
+                      userId:
+                        type: string
+                        format: uuid
+                      accessToken: 
+                        type: string
+                        format: byte
+        '400':
+          $ref: '#/components/responses/400'
+  
+  /v1/auth/password/change:
+    put: 
+      tags:
+        - Authentication
+      summary: Change current user's password
+      description: | 
+        This can only be done by logged in user
+      parameters:
+        - in: path
+          name: userId 
+          schema: 
+            type: string
+            format: uuid
+          description: the required userId
+      requestBody: 
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties: 
+                oldPassword:
+                  type: string
+                  format: password
+                newPassword:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: Success request
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 200
+                  message: 
+                    type: string
+                    example: 'Success request'
+        '400': 
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404': 
+          $ref: '#/components/responses/404'
+  /v1/auth/account/password/reset:
+    put: 
+      tags: 
+        - Authentication
+      summary: Reset user's password
+      description: |
+        User needs to confirm their email, then server will send a resetPasswordToken to user through email
+      requestBody:
+        content: 
+          application/json:
+            schema: 
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Success request
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 200
+                  message: 
+                    type: string
+                    example: 'Success request'
+        '400': 
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404': 
+          $ref: '#/components/responses/404'
+  /v1/auth/signout:
+    post: 
+      tags:
+        - Authentication
+      summary: Sign out current user
+      description: | 
+        This can only be done by the logged in user
+      responses:
+        '200':
+          description: Success request
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 200
+                  message: 
+                    type: string
+                    example: 'Success request'
+        '400': 
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404': 
+          $ref: '#/components/responses/404'
+
+  /v1/user/:
+    put: 
+      tags: 
+        - User
+      summary: Update current user profile
+      description: |
+        This can only be done by the logged in user 
+      requestBody: 
+        content: 
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/UserProfile'
+        description: Updated user profile
+        required: true
+      responses:
+        '200':
+          description: Success request
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 200
+                  message: 
+                    type: string
+                    example: 'Success request'
+        '400': 
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404': 
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+  
+  '/v1/user/{userId}/profile':
+    get:
+      tags: 
+        - User
+      summary: Get user profile by userId
+      description: |
+        This can only be done by logged in user
+      parameters:
+        - in: path
+          name: userId
+          schema: 
+            type: string
+            format: uuid
+          description: the required userId for user 
+      responses:
+        '200':
+          description: Success request
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 200
+                  message: 
+                    type: string
+                    example: 'Success request'
+                  payload:
+                    $ref: '#/components/schemas/UserProfile'
+        '400': 
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404': 
+          $ref: '#/components/responses/404'
+  
+  /v1/sport: 
+    get: 
+      tags: 
+        - Sport
+      summary: Get a list of all sports 
+      parameters:
+        - in: query
+          name: limit
+          schema: 
+            type: integer
+          description: the limit number of result
+        - in: query
+          name: offset
+          schema: 
+            type: integer
+          description: the number for pagnation
+        - in: query
+          name: startWith
+          schema: 
+            type: string
+          description: the start character of sport
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [asc, desc]
+          description: > 
+            Sort order:
+              * `asc`: - Ascending, from A -> Z
+              * `desc`: - Descending, from Z -> A
+      description: |
+        This can be done by anyone
+      responses:
+        '200':
+          description: Success request
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 200
+                  message: 
+                    type: string
+                    example: 'Success request'
+        '400': 
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404': 
+          $ref: '#/components/responses/404'
+  /v1/admin/sport: 
+    post: 
+      tags: 
+        - Sport
+        - Admin
+      summary: Create a new sport 
+      description: |
+        This can only be done by the admin
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/Sport'
+      responses:
+        '200':
+          description: Success request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: 'Success request'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+  
+  '/v1/sport/{sportCode}':
+    get:
+      tags: 
+        - Sport
+      summary: Get a sport information by sport code
+      description: |
+        This can only be done by anyone
+      parameters: 
+        - in: path
+          name: sportCode
+          schema: 
+            type: string
+          description: |
+            Predefined, unique code for sport
+      responses:
+        '200':
+          description: Success request
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 200
+                  message: 
+                    type: string
+                    example: 'Success request'
+        '400': 
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404': 
+          $ref: '#/components/responses/404'
+    
+  '/v1/admin/sport/{sportCode}':
+    put:
+      tags: 
+        - Sport
+        - Admin
+      summary: Update specific sport information by sport code
+      description: |
+        This can only be done by admin
+      parameters:
+        - in: path
+          name: sportCode
+          schema: 
+            type: string
+          description: |
+            Predefined, unique code for sport
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/Sport'
+      responses:
+        '200':
+          description: Success request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: 'Success request'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+    delete:
+      tags:
+        - Sport
+        - Admin
+      summary: Delete a sport by sport code
+      parameters:
+        - in: path
+          name: sportCode
+          schema: 
+            type: string
+          description: |
+            Predefined, unique code for sport
+      description: |
+        This can only be done by the admin
+      responses:
+        '200':
+          description: Success request
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 200
+                  message: 
+                    type: string
+                    example: 'Success request'
+        '400': 
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404': 
+          $ref: '#/components/responses/404'
+  
+  /v1/team: 
+    post: 
+      tags: 
+        - Team
+      summary: Create a new team for current user
+      description: |
+        This can only be done by the logged in user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Team'
+      responses:
+        '200':
+          description: Success request
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 200
+                  message: 
+                    type: string
+                    example: 'Success request'
+        '400': 
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404': 
+          $ref: '#/components/responses/404'
+
+  '/v1/user/{userId}/team':
+    get: 
+      tags: 
+        - Team 
+        - User
+      summary: Get a list of teams of user 
+      description: |
+        * This can only be done by logged in user
+        * Use userId in accsessToken for encapsulation
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+            format: uuid
+          description: the required userId of user
+        - in: query
+          name: limit
+          schema: 
+            type: integer
+          description: the limit number for pagnation 
+        - in: query
+          name: sort
+          schema: 
+            type: string 
+            enum: [asc, desc]
+          description: > 
+            Sort order: 
+              * `asc` - Ascending, from newest to oldest 
+              * `desc` - Descending, from oldest to newest
+        - in: query
+          name: type
+          schema: 
+            type: string
+            enum: [c, m]
+          description: > 
+            Type: 
+              * `c` - Created by that user 
+              * `p` - Participated by that user
+      responses:
+        '200':
+          description: Success request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: 'Success request'
+                  payload: 
+                    type: object
+                    properties: 
+                      teamList: 
+                        type: array
+                        items: 
+                          $ref: '#/components/schemas/Team'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+  
+  '/v1/team/{teamId}':
+    get:
+      tags:
+        - Team
+      summary: Get information of the team, in the current user's perpestive 
+      description: |
+        This can only be done by logged in user. The information includes team profile and the role of the current user 
+      parameters: 
+        - in: path
+          schema: 
+            type: string
+            format: uuid
+          description: the required teamId for team
+      responses:
+        '200':
+          description: Success request
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 200
+                  message: 
+                    type: string
+                    example: 'Success request'
+                  payload:
+                    type: object
+                    properties: 
+                      role: 
+                        type: string
+                        enum: [c, m, n]
+                        example: 'h'
+                        description: c - creator, m - member, n - not a member
+                      team: 
+                        $ref: '#/components/schemas/Team'
+
+        '400': 
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404': 
+          $ref: '#/components/responses/404'
+    put: 
+      tags: 
+        - Team
+      summary: Update a team that hosted by current user
+      description: |
+        This can only be done by logged in user and a host
+      parameters:
+        - in: path
+          schema: 
+            type: string
+            format: uuid 
+          description: the required userId
+        - in: path
+          schema:
+            type: string
+            format: uuid
+          description: the required teamId
+      requestBody:
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Team'
+      responses:
+        '200':
+          description: Success request
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 200
+                  message: 
+                    type: string
+                    example: 'Success request'
+        '400': 
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404': 
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '610':
+          $ref: '#/components/responses/610'
+    delete:
+      tags:
+        - Team
+      summary: Delete a team that hosted by current user
+      description: |
+        This can only be done by logged in user and a host
+      parameters: 
+        - in: path
+          schema: 
+            type: string
+            format: uuid
+          description: the required userId
+        - in: path
+          schema: 
+            type: string
+            format: uuid 
+          description: the required teamId 
+      responses:
+        '200':
+          description: Success request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: 'Success request'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '610':
+          $ref: '#/components/responses/610'
+
+  '/v1/team/all':
+    get: 
+      tags: 
+        - Team
+      summary: Get a list of all team that current player is not a member 
+      description: |
+        This can only be done by logged in user
+      parameters: 
+        - in: query
+          name: sort
+          schema: 
+            type: string
+            enum: [asc, desc]
+          description: >
+            Sort order:
+              * `asc` - Ascending, from newest to oldest
+              * `desc' - Descending, from oldest to newest
+        - in: query
+          name: sportCode
+          schema: 
+            type: string
+          description: Predefined, unique code for sport filter
+        - in: query
+          name: limit
+          schema: 
+            type: integer
+          description: The limit number for results
+        - in: query
+          name: offset
+          schema: 
+            type: integer
+          description: The number for pagnation
+      responses:
+        '200':
+          description: Success request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: 'Success request'
+                  payload: 
+                    type: object
+                    properties:
+                      teamList: 
+                        type: array
+                        items: 
+                          $ref: '#/components/schemas/Team'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+
+  '/v1/user/{userId}/game/current':
+    get: 
+      tags: 
+        - User
+        - Game
+      summary: Get current games of user
+      description: |
+        * This can only be done by logged in user
+        * Use the userId in accessToken for encapsulation
+      parameters:
+        - in: path
+          name: userId
+          schema: 
+            type: string
+            format: uuid
+          description: The required userId for user
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: ['asc', 'desc']
+          description: > 
+            Sort Order:
+              * `asc` - Ascending, from the nearest time to farthest
+              * `desc` - Descending, from the farthest time to nearest
+        - in: query
+          name: offset
+          schema:
+            type: integer
+          description: The number for pagnitaion
+        - in: query
+          name: limit
+          schema: 
+            type: integer
+          description: The limit number for results
+      responses:
+        '200':
+          description: Success request
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 200
+                  message: 
+                    type: string
+                    example: 'Success request'
+                  payload: 
+                    games: 
+                      type: array
+                      items:
+                        $ref: '#/components/schema/Game'
+        '400': 
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404': 
+          $ref: '#/components/responses/404'
+  
+  '/v1/user/{userId}/game/past':
+    get: 
+      tags:
+        - User
+        - Game
+      summary: Get past games of user
+      description: |
+        * This can only be done by logged in user
+        * Use userId in accessToken for encapsulation 
+      parameters:
+        - in: path
+          name: userId
+          schema: 
+            type: string
+            format: uuid
+          description: the required userId for user
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: ['asc', 'desc']
+          description: > 
+            Sort Order:
+              * `asc` - Ascending, from the most recent to least
+              * `desc` - Descending, from the least recent to most
+        - in: query
+          name: offset
+          schema:
+            type: integer
+          description: The number for pagnitaion
+        - in: query
+          name: limit
+          schema: 
+            type: integer
+          description: The limit number for results
+      responses:
+        '200':
+          description: Success request
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: 
+                    type: integer
+                    example: 200
+                  message: 
+                    type: string
+                    example: 'Success request'
+                  payload: 
+                    games: 
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Game'
+        '400': 
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404': 
+          $ref: '#/components/responses/404'  
+  
+  /v1/game/:
+    post:
+      tags:
+        - Game
+      summary: Create a new game for current user
+      description: |
+        This can only be done by logged in user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Game'
+      responses:
+        '200':
+          description: Success request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: 'Success request'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+
+  '/v1/game/{gameId}':
+    get: 
+      tags:
+        - Game
+      summary: Get game detail by gameId
+      description: |
+        This can only be done by logged in user
+      parameters: 
+        - in: path
+          name: gameId 
+          schema: 
+            type: string
+            format: uuid 
+          description: The required gameId for game
+      responses:
+        '200':
+          description: Success request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: 'Success request'
+                  payload: 
+                    type: object
+                    properties: 
+                      game: 
+                        $ref: '#/components/schemas/Game'
+                      role: 
+                        type: string
+                        enum: [h, p, n]
+                        description: |
+                          * h: host 
+                          * p: participant
+                          * n: not participated 
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+    put: 
+      tags:
+        - Game
+      summary: Update game detail by gameId
+      description: |
+        This can only be done by logged in user and the host
+      parameters: 
+        - in: query
+          name: gameId
+          schema: 
+            type: string
+            format: uuid
+          description: The required gameId for game
+      requestBody: 
+        content:
+          application/json:
+            schema: 
+              $ref: '#/component/schemas/Game'
+      responses:
+        '200':
+          description: Success request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: 'Success request'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+    delete: 
+      tags: 
+        - Game
+      summary: Delete game by gameId 
+      description: |
+        This can only be done by logged in user and the host
+      parameters:
+        - in: query
+          name: gameId
+          schema:
+            type: string
+            format: uuid
+          description: The required gameId for game
+      responses:
+        '200':
+          description: Success request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: 'Success request'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+   
+  /v1/game/all:
+    get: 
+      tags:
+        - Game
+      summary: Get all game that current user is not participated yet
+      description: |
+        This can only be done by logged in user 
+      parameters:
+        - in: query
+          name: offset
+          schema:
+            type: integer
+          description: The number for pagination
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: The limit number for results
+        - in: query
+          name: sort
+          schema: 
+            type: string
+            enum: ['asc', 'desc']
+          description: >
+            Sort order:
+              * `asc` - Ascending, from newest to oldest
+              * `desc` - Descending, from oldest to newest
+        - in: query
+          name: sportCode
+          schema: 
+            type: string
+          description: Predefined, unique code for sport
+      responses:
+        '200':
+          description: Success request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: 'Success request'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+
+components:
+  schemas:
+    User:
+      type: object
+      required:
+      - _id
+      - username
+      - email
+      - password
+      - profile
+      - createdAt
+      - updatedAt
+      properties:
+        _id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+        profile:
+          type: string
+          format: uuid
+          example: profileId 
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        createdAtTimestamp:
+          type: number
+          description: virtual field
+        updatedAtTimestamp:
+          type: number
+          description: virtual field
+
+    UserProfile:
+      type: object
+      required:
+      - _id
+      - userId
+      - lastName
+      - firstName
+      - country
+      - gender
+      - createdAt
+      - updatedAt
+      properties:
+        _id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        lastName:
+          type: string
+        firstName:
+          type: string
+        name:
+          type: string
+          description: virtual field = firstName + lastName
+        address:
+          type: string
+          example: 129G Brittany Manor Drive, Amherst, MA, 01002
+        phone:
+          type: string
+          example: (413) 888-8489
+        country:
+          type: string
+          example: USA
+        gender:
+          type: string
+          enum: [Male, Female, Others]
+        age:
+          type: integer
+          minimum: 10
+          maximum: 100
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        createdAtTimestamp:
+          type: number
+          description: virtual field
+        updatedAtTimestamp:
+          type: number
+          description: virtual field
+
+    Sport:
+      type: object
+      required: 
+        - _id
+        - name
+      properties:
+        _id:
+          type: string
+          format: uuid 
+        name: 
+          type: string
+          example: Soccer
+        code: 
+          type: string
+          example: SOC
+    
+    Game: 
+      type: object
+      required:
+        - _id 
+        - host 
+        - sport
+        - location
+        - startAt
+        - endAt
+        - createdAt
+        - updatedAt
+      properties:
+        _id:
+          type: string
+          format: uuid
+        host:
+          type: string
+          format: uuid
+          example: userId 
+        participants:
+          type: array
+          items: 
+            type: string
+            format: uuid
+            example: userId
+        sport:
+          type: string
+          format: uuid
+          example: sportId
+        teams: 
+          type: array
+          items:
+            type: string
+            format: uuid
+            example: teamId
+        location:
+          type: string
+        startAt: 
+          type: string
+          format: date-time
+        endAt: 
+          type: string
+          format: date-time
+        startAtTimestamp: 
+          type: number
+          description: virtual field
+        endAtTimestamp: 
+          type: number
+          description: virtual field
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        createdAtTimestamp:
+          type: number
+          description: virtual field
+        updatedAtTimestamp:
+          type: number
+          description: virtual field
+    
+    Team: 
+      type: object
+      required: 
+        - _id
+        - host
+        - sport
+      properties:
+        _id:
+          type: string
+          format: uuid
+        host:
+          type: string
+          format: uuid
+          description: userId of host
+        participants:
+          type: array
+          items:
+            type: string
+            format: uuid 
+          description: list of userId of participants
+        sport: 
+          type: string
+          description: sportCode of sport
+          example: 'SOC'
+    ApiResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code: 
+          type: integer
+          minimum: 100
+          maximum: 600
+          description: code number 
+        message: 
+          type: string
+          description: success message or brief description of error
+        payload:
+          description: extra information that will be returned to client
+          type: object
+  
+  # Reusable fields 
+  responses:
+    '200': 
+      description: Success request
+    '400':
+      description: Bad request
+    '401':
+      description: |
+        Unauthorized. The client passed in the invalid token or didn't pass any token  
+    '404':
+      description: Not found
+    '409': 
+      description: |
+        Conflict. The body should include information for the user to recognize the source of conflict in the payload
+    '600':
+      description: |
+        Overall database error 
+    '601':
+      description: |
+        The email not found in the database
+    '602':
+      description: Wrong password
+    '610': 
+      description: User is not team's host
+
+
+
