@@ -3,7 +3,7 @@ let app = express();
 
 app.use(express.static('./'));
 app.get('/', (req, res) => {
-  res.sendFile('index.html');
-})
+	res.sendFile('index.html');
+});
 console.log("Server connected");
-app.listen(3000)
+app.listen(3000);
