@@ -6,4 +6,4 @@ app.get('/', (req, res) => {
 	res.sendFile('index.html');
 });
 console.log("Server connected");
-app.listen(3000);
+app.listen(process.env.PORT || 3000);
