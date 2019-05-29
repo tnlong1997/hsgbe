@@ -116,6 +116,8 @@ paths:
       summary: Change current user's password
       description: | 
         This can only be done by logged in user
+      security: 
+        - accessToken: []
       parameters:
         - in: path
           name: userId 
@@ -198,6 +200,8 @@ paths:
       summary: Sign out current user
       description: | 
         This can only be done by the logged in user
+      security:
+        - accessToken: []
       responses:
         '200':
           description: Success request
@@ -226,6 +230,8 @@ paths:
       summary: Update current user profile
       description: |
         This can only be done by the logged in user 
+      security:
+        - accessToken: [] 
       requestBody: 
         content: 
           application/json:
@@ -263,6 +269,8 @@ paths:
       summary: Get user profile by userId
       description: |
         This can only be done by logged in user
+      security: 
+        - accessToken: []
       parameters:
         - in: path
           name: userId
@@ -298,6 +306,8 @@ paths:
       tags: 
         - Sport
       summary: Get a list of all sports 
+      security: 
+        - accessToken: []
       parameters:
         - in: query
           name: limit
@@ -351,6 +361,8 @@ paths:
         - Sport
         - Admin
       summary: Create a new sport 
+      security: 
+        - accessToken: []
       description: |
         This can only be done by the admin
       requestBody:
@@ -422,6 +434,9 @@ paths:
       summary: Update specific sport information by sport code
       description: |
         This can only be done by admin
+      security: 
+        - accessToken: []
+        - adminToken: []
       parameters:
         - in: path
           name: sportCode
@@ -466,6 +481,9 @@ paths:
             type: string
           description: |
             Predefined, unique code for sport
+      security: 
+        - accessToken: []
+        - adminToken: []
       description: |
         This can only be done by the admin
       responses:
@@ -496,6 +514,8 @@ paths:
       summary: Create a new team for current user
       description: |
         This can only be done by the logged in user
+      security:
+        - accessToken: []
       requestBody:
         content:
           application/json:
@@ -528,6 +548,8 @@ paths:
         - Team 
         - User
       summary: Get a list of teams of user 
+      security: 
+        - accessToken: []
       description: |
         * This can only be done by logged in user
         * Use userId in accsessToken for encapsulation
@@ -594,6 +616,8 @@ paths:
       tags:
         - Team
       summary: Get information of the team, in the current user's perpestive 
+      security: 
+        - accessToken: []
       description: |
         This can only be done by logged in user. The information includes team profile and the role of the current user 
       parameters: 
@@ -637,6 +661,8 @@ paths:
       tags: 
         - Team
       summary: Update a team that hosted by current user
+      security: 
+        - accessToken: []
       description: |
         This can only be done by logged in user and a host
       parameters:
@@ -683,6 +709,8 @@ paths:
       tags:
         - Team
       summary: Delete a team that hosted by current user
+      security: 
+        - accessToken: []
       description: |
         This can only be done by logged in user and a host
       parameters: 
@@ -724,6 +752,8 @@ paths:
       tags: 
         - Team
       summary: Get a list of all team that current player is not a member 
+      security: 
+        - accessToken: []
       description: |
         This can only be done by logged in user
       parameters: 
@@ -785,6 +815,8 @@ paths:
         - User
         - Game
       summary: Get current games of user
+      security: 
+        - accessToken: []
       description: |
         * This can only be done by logged in user
         * Use the userId in accessToken for encapsulation
@@ -846,6 +878,8 @@ paths:
         - User
         - Game
       summary: Get past games of user
+      security: 
+        - accessToken: []
       description: |
         * This can only be done by logged in user
         * Use userId in accessToken for encapsulation 
@@ -908,6 +942,8 @@ paths:
       summary: Create a new game for current user
       description: |
         This can only be done by logged in user
+      security: 
+        - accessToken: []
       requestBody:
         content:
           application/json:
@@ -939,6 +975,8 @@ paths:
       tags:
         - Game
       summary: Get game detail by gameId
+      security: 
+        - accessToken: []
       description: |
         This can only be done by logged in user
       parameters: 
@@ -986,6 +1024,8 @@ paths:
       summary: Update game detail by gameId
       description: |
         This can only be done by logged in user and the host
+      security: 
+        - accessToken: []
       parameters: 
         - in: query
           name: gameId
@@ -1022,6 +1062,8 @@ paths:
       tags: 
         - Game
       summary: Delete game by gameId 
+      security: 
+        - accessToken: []
       description: |
         This can only be done by logged in user and the host
       parameters:
@@ -1059,6 +1101,8 @@ paths:
       summary: Get all game that current user is not participated yet
       description: |
         This can only be done by logged in user 
+      security: 
+        - accessToken: []
       parameters:
         - in: query
           name: offset
@@ -1344,6 +1388,14 @@ components:
       description: Wrong password
     '610': 
       description: User is not team's host
-
+  securitySchemes:
+    accessToken: 
+      type: http
+      schema: bearer
+      bearerFormat: JWT
+    adminToken:
+      type: http
+      schema: bearer
+      bearerFormat: JWT
 
 
