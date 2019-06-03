@@ -6,10 +6,11 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 const dbConfig = require('./config/dbConfig');
 
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users/users');
-const gamesRouter = require('./routes/games/games');
-const teamsRouter = require('./routes/teams/teams');
+const indexRouter = require('./routes/indexRoutes');
+const usersRouter = require('./routes/userRoutes');
+const gamesRouter = require('./routes/gameRoutes');
+const teamsRouter = require('./routes/teamRoutes');
+const authRouter = require('./routes/authRoutes')
 
 let app = express();
 
@@ -31,10 +32,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/games', gamesRouter);
-app.use('/teams', teamsRouter);
+app.use('/v1', indexRouter);
+app.use('/v1/users', usersRouter);
+app.use('/v1/games', gamesRouter);
+app.use('/v1/teams', teamsRouter);
+app.use('/v1/auth', authRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -53,4 +55,3 @@ app.use(function(err, req, res) {
 });
 
 module.exports = app;
-

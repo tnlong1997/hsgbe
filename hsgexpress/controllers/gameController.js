@@ -1,5 +1,5 @@
-const Game = require('../models/Game');
-const Team = require('../models/Team');
+const Game = require('../models/gameModel');
+const Team = require('../models/teamModel');
 const mongoose = require('mongoose');
 
 exports.game_list = function(req, res) {
@@ -43,19 +43,17 @@ exports.game_create = function(req, res) {
 			res.send({status: 200, newGame: newGame});
 		});
 	});
-  
+
 };
 
 exports.game_edit = function(req, res) {
-	let currentGame = mongoose.Types.ObjectId(req.params.id); 
-	
+	let currentGame = mongoose.Types.ObjectId(req.params.id);
+
 	Game.updateOne({'_id': currentGame}, req.body, function(err) {
 		if (err) {
 			return res.send({ status: 400, err: err });
-		} 
+		}
 
 		return res.send({ status: 200 });
 	});
 };
-
-

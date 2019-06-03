@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const bcrypt = require('bcrypt-nodejs');
+
 let Schema = mongoose.Schema;
 
 let userSchema = new Schema({
@@ -34,6 +35,12 @@ userSchema.virtual('createdAtTimestamp').get(function() {
 userSchema.virtual('updatedAtTimestamp').get(function() {
 	return this.updatedAt.getTime();
 });
+
+userSchema.methods.toJSON = function() {
+	var obj = this.toObject();
+	delete obj.password;
+	return obj;
+};
 
 userSchema.plugin(uniqueValidator);
 
