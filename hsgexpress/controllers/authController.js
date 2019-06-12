@@ -1,8 +1,11 @@
 const User = require('../models/userModel');
 const Token = require('../models/tokenModel');
+const UserProfile = require('../models/userProfileModel');
+
 const bcrypt = require('bcrypt-nodejs');
 const secret = require('../config/secret');
 const jwt = require('jsonwebtoken');
+
 const constants = require('../constants/constants');
 const SALT_FACTOR = constants.SALT_FACTOR;
 const EXPIRE_TIME = constants.EXPIRE_TIME;
@@ -15,45 +18,93 @@ exports.auth_sign_up = function(req, res) {
 			message: "No body in the request",
 		});
 	}
-	let newUser = new User(req.body);
-	newUser.validate(function(err) {
-		if (err) {
-			return res.send({
-				code: 600,
-				message: err.message,
-			});
-		}
-		bcrypt.genSalt(SALT_FACTOR, function(err, salt) {
+
+	if (!req.body.email) {
+		return res.send({
+			code: 400,
+			message: "No email in the request",
+		});
+	}
+
+	if (!req.body.password) {
+		return res.send({
+			code: 400,
+			message: "No password in the request",
+		});
+	}
+
+	let newProfile = new UserProfile(req.body);
+	let newUser = new User({
+		email: req.body.email,
+		password: req.body.password,
+	});
+
+	newProfile.userId = newUser._id;
+	newUser.profileId = newProfile._id;
+
+	new Promise(function(resolve, reject) {
+		newProfile.save((err) => {
 			if (err) {
-				return res.send({
+				reject({
 					code: 600,
-					message: err.message,
+					message: err.message
 				});
+			} else {
+				// console.log(newProfile);
+				resolve();
 			}
-			bcrypt.hash(newUser.password, salt, function() {}, function(err, hashedPassword) {
+		});
+	}).then(() => {
+		return new Promise(function(resolve, reject) {
+			bcrypt.genSalt(SALT_FACTOR, function(err, salt) {
 				if (err) {
-					return res.send({
+					reject({
 						code: 600,
 						message: err.message,
 					});
+				} else {
+					resolve(salt);
 				}
-				newUser.password = hashedPassword;
-				newUser.save(function(err) {
-					if (err) {
-						return res.send({
-							code: 600,
-							message: err.message
-						});
-					}
-					return res.send({
-						code: 200,
-						message: "Successful request",
-						userId: newUser._id,
-					});
-				});
 			});
 		});
+	}).then((salt) => {
+		return new Promise(function(resolve, reject) {
+			bcrypt.hash(req.body.password, salt, null, function(err, hashedPassword) {
+				if (err) {
+					reject({
+						code: 600,
+						message: err.message,
+					});
+				} else {
+					resolve(hashedPassword);
+				}
+			});
+		});
+	}).then((hashedPassword) => {
+		return new Promise(function(resolve, reject) {
+			newUser.password = hashedPassword;
+			newUser.save(function(err) {
+				if (err) {
+					reject({
+						code: 600,
+						message: err.message
+					});
+				}
+				resolve(newUser._id);
+			});
+		});
+	}).then((userId) => {
+		// console.log(newProfile);
+		res.send({
+			code: 200,
+			message: "Successful request",
+			userId: userId,
+			profile: newProfile,
+		});
+	}).catch((errResponse) => {
+		res.send(errResponse);
 	});
+
 };
 
 //POST - Signin
@@ -91,7 +142,7 @@ exports.auth_sign_in = function(req, res) {
 			if (isMatch && !err) {
 				let info = {
 					email: user.email,
-					_id: user._id,
+					userId: user._id,
 					type: "access",
 				};
 				let accessToken = jwt.sign(info, secret, {expiresIn: EXPIRE_TIME});

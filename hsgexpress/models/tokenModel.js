@@ -17,8 +17,7 @@ var Token = new Schema({
 		type: String,
 		required: true
 	}
-}, { timestamps: true }
-);
+}, { timestamps: true });
 
 Token.plugin(uniqueValidator);
 
